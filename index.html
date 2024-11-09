@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REAPER DEATH- Reaper Death Design with Pop-Up</title>
+
+    <style>
+        /* Set body styling */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('https://your-reaper-death-image-url.com') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* Dark overlay for readability */
+        .dark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        /* Container styling */
+        .container {
+            position: relative;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            width: 80%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+            border: 2px solid rgba(255, 0, 0, 0.8); /* Red glowing border */
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8); /* Glowing red shadow */
+        }
+
+        /* Timer display */
+        .timer {
+            font-size: 3em;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+            color: #ff5555;
+        }
+
+        /* Period number display */
+        .period-number {
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            color: #ff3333;
+            text-shadow: 0 0 5px #ff0000;
+        }
+
+        /* Result table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: rgba(50, 50, 50, 0.9);
+            border-radius: 10px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ff4444;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        /* Table headers */
+        th {
+            background-color: #ff3333;
+            color: black;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Result rows */
+        td {
+            transition: background-color 0.3s ease;
+        }
+
+        td:hover {
+            background-color: rgba(255, 50, 50, 0.3);
+        }
+
+        /* Glowing border for result table */
+        .glow {
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+        }
+
+        /* Pop-up styling */
+        .popup {
+            position: fixed;
+            bottom: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            text-align: center;
+            border: 2px solid red;
+            border-radius: 10px;
+            box-shadow: 0 0 15px red;
+            opacity: 0;
+            transition: bottom 0.5s ease, opacity 0.5s ease;
+            z-index: 100;
+        }
+
+        .popup.show {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        .popup a {
+            color: #ff5555;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .popup a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Dark overlay for background -->
+<div class="dark-overlay"></div>
+
+<div class="container glow">
+    <h1>REAPER DEATH</h1>
+
+    <!-- Timer Display -->
+    <div class="timer" id="timer30s">00:00</div>
+
+    <!-- Period Number Display -->
+    <div class="period-number" id="period30s">Period: 000000</div>
+
+    <!-- Result Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Period</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody id="resultTable">
+            <tr>
+                <td>Loading...</td>
+                <td>Loading...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Pop-up for Telegram Join -->
+<div class="popup" id="popup">
+    <p>Join our Telegram channel: <br><a href="https://t.me/BNLASTKINGHACK" target="_blank">REAPER DEATH</a></p>
+</div>
+
+<script>
+    // Initialize variables for updating timer and results
+    let currentPeriod = '';
+    const results = ['SMALL', 'BIG'];
+    let currentIndex = 0;
+    let popupTimeout;
+
+    // Function to update the timer and period
+    function updateTimerAndPeriod() {
+        const now = new Date();
+        const seconds = now.getUTCSeconds();
+        const remainingSeconds = 30 - (seconds % 30);
+        const minutes = now.getUTCMinutes();
+        const totalMinutes = now.getUTCHours() * 60 + minutes;
+        const periodNumber = `${now.getUTCFullYear()}${String(now.getUTCMonth() + 1).padStart(2, '0')}${String(now.getUTCDate()).padStart(2, '0')}30${(1 + totalMinutes * 2 + (seconds >= 30 ? 1 : 0))}`;
+
+        // Update timer format "  x x  :  x x "
+        const formattedTime = `  ${String(remainingSeconds).padStart(2, '0').split('').join('  ')}`;
+        document.getElementById('timer30s').innerHTML = formattedTime;
+
+        // Check if the period number changed
+        if (periodNumber !== currentPeriod) {
+            currentPeriod = periodNumber;
+            document.getElementById('period30s').innerHTML = `Period: ${currentPeriod}`;
+            updateResult();
+            showPopup();  // Show pop-up on period change
+        }
+    }
+
+    // Function to update the result
+    function updateResult() {
+        const randomResult = results[currentIndex % results.length];
+        currentIndex++;
+
+        // Add result to the result table
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `<td>${currentPeriod}</td><td>${randomResult}</td>`;
+        document.getElementById('resultTable').prepend(newRow);
+
+        // Limit result history to the last 10 periods
+        if (document.getElementById('resultTable').rows.length > 10) {
+            document.getElementById('resultTable').deleteRow(-1);
+        }
+    }
+
+    // Function to show the pop-up
+    function showPopup() {
+        const popup = document.getElementById('popup');
+        popup.classList.add('show');
+
+        // Hide the pop-up after 5 seconds
+        clearTimeout(popupTimeout);
+        popupTimeout = setTimeout(() => {
+            popup.classList.remove('show');
+        }, 5000);  // Pop-up disappears after 5 seconds
+    }
+
+    // Set interval to update the timer every second
+    setInterval(updateTimerAndPeriod, 1000);
+
+    // Initialize the first result
+    updateResult();
+</script>
+
+</body>
+</html>
