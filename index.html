@@ -3,148 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REAPER DEATH PREDICTING UPCOMING RESULTS</title>
+    <title>REAPER DEATH Prediction</title>
     <style>
         body {
-            background: linear-gradient(to bottom right, #004d00, #001a00);
-            color: white;
-            font-family: "Arial", sans-serif;
-            text-align: center;
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            width: 80%;
-            max-width: 600px;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
-            background: radial-gradient(circle, #003300, #001a00);
-        }
-        .title {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 0px 0px 10px rgba(0, 255, 0, 1);
-        }
-        .period-number,
-        .timer {
-            font-size: 22px;
-            margin: 15px 0;
-            font-weight: bold;
-            background: rgba(0, 255, 0, 0.2);
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-        }
-        .result-box {
-            margin: 20px auto;
-            font-size: 20px;
-            font-weight: bold;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border: 2px solid #00ff00;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 255, 0, 0.8);
-            color: white;
-        }
-        .green {
+            overflow: hidden;
+            font-family: Arial, sans-serif;
             color: #00ff00;
         }
-        .red {
-            color: #ff0000;
+        /* Hacker coding background (Matrix effect) */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
         }
-        footer {
-            margin-top: 30px;
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
+        .table-box {
+            margin: 50px auto;
+            padding: 20px;
+            border: 5px solid #00ff00; /* Neon green border */
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+            width: 80%;
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
+        }
+        .table-box h2 {
+            margin: 10px 0;
+            color: #00ff00; /* Green text */
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #00ff00; /* Neon green border */
+            font-size: 18px;
+            font-weight: bold;
+        }
+        th {
+            background-color: #00ff00;
+            color: #000;
+        }
+        td {
+            background-color: #222;
+            color: #00ff00;
+        }
+        .timer, .period {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #00ff00;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">REAPER DEATH PREDICTING UPCOMING RESULTS</h1>
-        <div class="period-number" id="periodNumber">Period: Loading...</div>
-        <div class="timer" id="timer">Timer: Loading...</div>
-        <div class="result-box" id="result">Result: Waiting for update...</div>
-        <footer>DEPLOBER BY BN LAST KING</footer>
+    <canvas id="matrixCanvas"></canvas>
+    <h1 style="text-align: center; font-weight: bold; color: #00ff00;">REAPER DEATH Prediction</h1>
+    <div class="timer" id="timer30s">00 : 30</div>
+    <div class="period" id="period30s">Period: Loading...</div>
+    <div class="table-box">
+        <h2>Upcoming Results</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Period Number</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="resultTable">
+                <!-- Dynamic rows will be appended here -->
+            </tbody>
+        </table>
     </div>
 
     <script>
-        // JavaScript for Timer and Period Number
-        let results = [
-            { type: "SMALL", value: "1 GREEN" },
-            { type: "SMALL", value: "3 GREEN" },
-            { type: "BIG", value: "7 GREEN" },
-            { type: "SMALL", value: "2 RED" },
-            { type: "BIG", value: "9 GREEN" },
-            { type: "SMALL", value: "4 RED" },
-            { type: "BIG", value: "6 RED" },
-            { type: "SMALL", value: "0" },
-            { type: "BIG", value: "8 RED" },
-            { type: "SMALL", value: "3" },
-            { type: "BIG", value: "7" },
-            { type: "SMALL", value: "4" },
-            { type: "BIG", value: "7" },
-            { type: "SMALL", value: "1" },
-            { type: "BIG", value: "5 GREEN" },
-            { type: "SMALL", value: "0" },
-            { type: "BIG", value: "9" },
-            { type: "SMALL", value: "1" },
-            { type: "BIG", value: "8" },
-            { type: "SMALL", value: "7" },
-            { type: "BIG", value: "7 9" },
-            { type: "SMALL", value: "6 8" },
-            { type: "BIG", value: "7 6" },
-            { type: "SMALL", value: "5 7" },
-            { type: "BIG", value: "GREEN" },
-            { type: "SMALL", value: "RED" }
-        ];
+        // JavaScript code for 30-second timer and random results
+        let timer30s = document.getElementById("timer30s");
+        let period30s = document.getElementById("period30s");
+        let resultTable = document.getElementById("resultTable");
         
-        let periodCounter = 0;
+        let resultsPattern = ["SMALL", "SMALL", "BIG", "SMALL", "SMALL", "BIG", "SMALL", "BIG"];
+        let currentResultIndex = 0;
 
-        function updateResults() {
-            const resultBox = document.getElementById('result');
-            const periodNumber = document.getElementById('periodNumber');
+        // Java Timer implementation using JavaScript
+        setInterval(() => {
+            const now = new Date();
+            const seconds = now.getUTCSeconds();
+            const remainingSeconds = 30 - (seconds % 30);
+            const minutes = now.getUTCMinutes();
+            const totalMinutes = now.getUTCHours() * 60 + minutes;
 
-            // Show the current result
-            const result = results[periodCounter % results.length];
-            resultBox.innerHTML = `Result: <span class="${result.value.includes("GREEN") ? 'green' : 'red'}">${result.type} ${result.value}</span>`;
+            // Update period number for 30-second interval
+            const periodNumber = `${now.getUTCFullYear()}${String(now.getUTCMonth() + 1).padStart(2, "0")}${String(now.getUTCDate()).padStart(2, "0")}30${1 + totalMinutes * 2 + (seconds >= 30 ? 1 : 0)}`;
+            period30s.textContent = `Period: ${periodNumber}`;
 
-            // Update the period number
-            let currentDate = new Date();
-            let formattedDate = currentDate.toISOString().split("T")[0].replace(/-/g, '');
-            let totalMinutes = currentDate.getUTCHours() * 60 + currentDate.getUTCMinutes();
-            let seconds = currentDate.getUTCSeconds();
-            let periodNum = `${formattedDate}30${1 + totalMinutes * 2 + (seconds >= 30 ? 1 : 0)}`;
-            periodNumber.innerText = `Period: ${periodNum}`;
+            // Update timer in "xx : xx" format
+            timer30s.textContent = `${String(remainingSeconds).padStart(2, "0")} : ${String(remainingSeconds).padStart(2, "0")}`;
 
-            // Increment the period counter
-            periodCounter++;
-        }
+            // Show random result when period number changes
+            if (remainingSeconds === 30) {
+                // Fetch the next result from the pattern
+                const result = resultsPattern[currentResultIndex];
+                currentResultIndex = (currentResultIndex + 1) % resultsPattern.length;
 
-        function startTimer() {
-            const timerElement = document.getElementById('timer');
+                // Add the result to the table
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${periodNumber}</td><td>${result}</td>`;
+                resultTable.prepend(row); // Add the new result to the top of the table
+            }
+        }, 1000);
 
-            setInterval(() => {
-                let currentDate = new Date();
-                let seconds = currentDate.getUTCSeconds();
-                let remainingSeconds = 30 - (seconds % 30);
-                let formattedTime = `  ${String(remainingSeconds).padStart(2, '0')}  `.replace(/(?<=\d)(?=\d)/g, ' ');
-                timerElement.innerText = `Timer: ${formattedTime}`;
+        // Matrix effect background
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
 
-                if (remainingSeconds === 30) {
-                    updateResults();
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#00ff00";
+            ctx.font = `${fontSize}px monospace`;
+
+            drops.forEach((y, i) => {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                const x = i * fontSize;
+                ctx.fillText(text, x, y * fontSize);
+
+                if (y * fontSize > canvas.height || Math.random() > 0.95) {
+                    drops[i] = 0;
                 }
-            }, 1000);
+                drops[i]++;
+            });
         }
 
-        // Initialize the timer
-        startTimer();
+        setInterval(drawMatrix, 50);
     </script>
 </body>
 </html>
