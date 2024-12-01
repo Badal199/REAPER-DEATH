@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REAPER DEATH  Upcoming Results</title>
+    <title>REAPER DEATH - Hacker System</title>
     <style>
+        /* Body Styling */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #000; /* Dark background for a hacker style */
-            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #000; /* Hacker-style black background */
+            color: #00ff00; /* Neon green text */
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,90 +19,104 @@
             height: 100vh;
         }
 
+        /* Header */
         .header {
-            font-size: 24px;
+            font-size: 36px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
             margin-bottom: 20px;
+            text-shadow: 0 0 15px #00ff00, 0 0 25px #00ff00;
         }
 
-        .server-status {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        .loading-status {
-            font-size: 16px;
-            color: yellow;
-            margin-bottom: 10px;
-        }
-
-        .result-table {
-            border: 2px solid yellow;
-            width: 50%;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .result-table th, .result-table td {
-            padding: 10px;
-            border: 1px solid yellow;
-        }
-
-        .result-table th {
-            background-color: #222;
-            color: yellow;
-        }
-
-        .result-table td {
-            background-color: green;
-            color: #fff;
-        }
-
+        /* Timer Box */
         .timer-box {
-            margin-top: 20px;
-            font-size: 20px;
-            background-color: #111;
-            padding: 10px;
-            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(45deg, #003300, #00ff00);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #00ff00;
         }
 
         .timer-box span {
-            color: yellow;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        /* Result Box Styling */
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            width: 50%;
+            text-align: center;
+            border: 3px solid #00ff00; /* Glowing border */
+            border-radius: 15px;
+            box-shadow: 0 0 30px #00ff00, 0 0 50px #00ff00;
+        }
+
+        .result-box-header {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px #00ff00;
+        }
+
+        .result-box-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .result-box-table th, .result-box-table td {
+            padding: 15px;
+            border: 1px solid #00ff00;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .result-box-table th {
+            background: linear-gradient(45deg, #003300, #00ff00);
+            color: black;
+            font-weight: bold;
+        }
+
+        .result-box-table td {
+            background-color: #001a00;
+            color: #00ff00;
         }
     </style>
 </head>
 <body>
-    <div class="header">REAPER DEATH  Upcoming Results</div>
-    <div class="server-status">
-        Status: <span style="color: green;">Active</span><br>
-        <span class="loading-status">Loading server...</span>
-    </div>
+    <div class="header">REAPER DEATH</div>
     <div class="timer-box">
-        Server Connected<br>
-        Period Number: <span id="period1m">Loading...</span><br>
-        Timer: <span id="timer1m">00:00</span>
+        <div>Server Connected</div>
+        <div>Period Number: <span id="period1m">Loading...</span></div>
+        <div>Timer: <span id="timer1m">00:00</span></div>
     </div>
-    <table class="result-table">
-        <thead>
-            <tr>
-                <th>Period</th>
-                <th>Result</th>
-            </tr>
-        </thead>
-        <tbody id="resultBody">
-            <!-- Results will be dynamically inserted here -->
-        </tbody>
-    </table>
+    <div class="result-box">
+        <div class="result-box-header">Current Result</div>
+        <table class="result-box-table">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody">
+                <!-- Only one result will show -->
+            </tbody>
+        </table>
+    </div>
 
     <script>
         const resultsPattern = [
-            "SMALL", "BIG", "SMALL", "BIG", "SMALL",
-            "SMALL", "BIG", "SMALL", "BIG", "BIG",
+            "SMALL", "BIG", "SMALL", "SMALL", "SMALL",
+            "BIG", "BIG", "SMALL", "BIG", "BIG",
             "SMALL", "BIG", "SMALL", "SMALL"
         ];
 
         let currentPeriodIndex = 0;
 
-        // Simulate the Java Timer behavior
         function updatePeriodAndTimer() {
             const now = new Date();
             const seconds = now.getUTCSeconds();
@@ -122,9 +137,9 @@
             const timerElement = document.getElementById("timer1m");
             timerElement.textContent = `   00  :  ${remainingSeconds
                 .toString()
-                .padStart(2, "0")}`.replace(/(?<=\d)(?=\d)/g, " ");
+                .padStart(2, "0")}`.replace(/(?<=\\d)(?=\\d)/g, " ");
 
-            // Show random result when period changes
+            // Show result when period changes
             if (remainingSeconds === 60) {
                 displayResult(periodNumber);
             }
@@ -132,6 +147,11 @@
 
         function displayResult(periodNumber) {
             const resultBody = document.getElementById("resultBody");
+
+            // Clear previous result
+            resultBody.innerHTML = "";
+
+            // Add the new result
             const newRow = document.createElement("tr");
 
             const periodCell = document.createElement("td");
@@ -143,10 +163,10 @@
 
             newRow.appendChild(periodCell);
             newRow.appendChild(resultCell);
-            resultBody.prepend(newRow);
+            resultBody.appendChild(newRow);
         }
 
-        // Initialize the update function every second
+        // Initialize the timer update
         setInterval(updatePeriodAndTimer, 1000);
     </script>
 </body>
